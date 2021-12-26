@@ -55,5 +55,6 @@ Test API:
 ```bash
 # Send get request to counting server
 $ curl localhost:8081/
-Connect to server failed: Get "https://server.service.dc1.consul/count": remote error: tls: bad certificate
+Connect to server failed: Get "https://server.service.dc1.consul/count": 
+remote error: tls: bad certificate
 ```
