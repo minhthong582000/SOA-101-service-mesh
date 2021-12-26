@@ -41,6 +41,7 @@ func heathCheck(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("ok"))
 }
 
+// Server create a counting server
 func Server() {
 	consulAdrr := os.Getenv("CONSUL_AGENT_ADDR")
 
@@ -76,7 +77,7 @@ func Server() {
 
 	//Create the default mux
 	mux := http.NewServeMux()
-	
+
 	var index uint64
 	mux.HandleFunc("/count", CountHandler{index: &index}.counter)
 	mux.HandleFunc("/ping", heathCheck) // Handle health check

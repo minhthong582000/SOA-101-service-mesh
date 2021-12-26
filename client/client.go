@@ -17,6 +17,7 @@ func heathCheck(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("ok"))
 }
 
+// Client create a counting client app
 func Client() {
 	consulAdrr := os.Getenv("CONSUL_AGENT_ADDR")
 
