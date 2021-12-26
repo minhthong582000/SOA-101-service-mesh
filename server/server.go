@@ -67,6 +67,7 @@ func Server() {
 	// 	log.Fatalln(fmt.Sprintf("SSL Configuration error: %s\n", err))
 	// }
 
+	// New consul client
 	uServiceConsul, err := consul.NewConsulClient(consulAdrr, nil)
 	if err != nil {
 		log.Fatalln("Can't find consul:", err)
