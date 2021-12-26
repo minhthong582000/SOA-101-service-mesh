@@ -50,12 +50,14 @@ func (c ClientHandler) GetKVStore(rw http.ResponseWriter, r *http.Request) {
 	v, err := c.kvService.Get(k)
 	if err != nil || v == "" {
 		rw.WriteHeader(404)
-		rw.Write([]byte("Value not found for key: " + k))
+		res := fmt.Sprintf("Value not found for key: %s", k)
+		rw.Write([]byte(res))
 		return
 	}
 
 	rw.WriteHeader(200)
-	rw.Write([]byte(k + ": " + v))
+	res := fmt.Sprintf("%s: %v", k, v)
+	rw.Write([]byte(res))
 }
 
 func (c ClientHandler) QueryConsul(rw http.ResponseWriter, r *http.Request) {
