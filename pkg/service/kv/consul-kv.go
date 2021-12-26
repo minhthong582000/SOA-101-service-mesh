@@ -9,11 +9,11 @@ import (
 
 // Client provides an interface for getting data out of Consul
 type Client interface {
-	// Create connect service
+	// Set stores the given value for the given key.
 	Set(k string, v string) error
-	// Get a Service from consul
+	// Get retrieves the stored value for the given key.
 	Get(k string) (v string, err error)
-	// Register a service with local agent
+	// Delete deletes the stored value for the given key.
 	Delete(k string) error
 }
 
