@@ -9,9 +9,10 @@ import (
 	"strings"
 
 	consul "github.com/minhthong582000/SOA-101-service-mesh/pkg/service/consul"
+	kv "github.com/minhthong582000/SOA-101-service-mesh/pkg/service/kv"
 )
 
-// heathCheck consul health test
+// heathCheck handle health check
 func heathCheck(w http.ResponseWriter, req *http.Request) {
     w.WriteHeader(200)
 	w.Write([]byte("ok"))
@@ -33,7 +34,14 @@ func Client() {
 	// 	log.Fatalln(fmt.Sprintf("SSL Configuration error: %s\n", err))
 	// }
 
+	// New consul client
 	uServiceConsul, err := consul.NewConsulClient(consulAdrr, nil)
+	if err != nil {
+		log.Fatalln("Can't find consul:", err)
+	}
+
+	// New consul kv client
+	kvService, err := kv.NewKVClient(consulAdrr, "/", nil)
 	if err != nil {
 		log.Fatalln("Can't find consul:", err)
 	}
@@ -53,6 +61,23 @@ func Client() {
 
 	// Handle health check
 	http.HandleFunc("/ping", heathCheck)
+
+	// Get data from consul kv
+	http.HandleFunc("/kv", func(rw http.ResponseWriter, r *http.Request) {
+		k := r.URL.Query().Get("token")
+
+		v, err := kvService.Get(k)
+		if err != nil || v == "" {
+			rw.WriteHeader(404)
+			rw.Write([]byte("Value not found for key: " + k))
+			return
+		}
+
+		rw.WriteHeader(200)
+		rw.Write([]byte(k + ": " + v))
+	})
+
+	// Send request to counting server (counting service)
 	http.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
 		// Get an HTTP client
 		httpClient := svc.HTTPClient()

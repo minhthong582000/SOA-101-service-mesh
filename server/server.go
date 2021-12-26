@@ -23,6 +23,7 @@ type CountHandler struct {
 	index *uint64
 }
 
+// counter Handle counting request from client service
 func (h CountHandler) counter(w http.ResponseWriter, r *http.Request) {
 	atomic.AddUint64(h.index, 1)
 	hostname, _ := os.Hostname()
@@ -35,7 +36,7 @@ func (h CountHandler) counter(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(responseJSON))
 }
 
-// heathCheck consul health test
+// heathCheck handle health check
 func heathCheck(w http.ResponseWriter, req *http.Request) {
     w.WriteHeader(200)
 	w.Write([]byte("ok"))

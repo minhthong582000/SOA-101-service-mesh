@@ -31,7 +31,7 @@ make run
 Test API:
 
 ```bash
-# Send get request to counting server
+# Send get request to counting client
 $ curl localhost:8081/
 {"count":2,"hostname":"4b2a8b9fd305"}
 
@@ -53,8 +53,26 @@ Test intentions Client --x--> Server:
 Test API:
 
 ```bash
-# Send get request to counting server
+# Send get request to counting client
 $ curl localhost:8081/
 Connect to server failed: Get "https://server.service.dc1.consul/count": 
 remote error: tls: bad certificate
 ```
+
+## Key/Value Store
+
+Test kv store:
+
+![kv](./docs/images/kv.png)
+
+```bash
+# Send get request to counting client
+$ curl localhost:8081/kv?token=wassupbro
+wassup/bro: {
+  "sup": "bruh"
+}
+
+$ curl localhost:8081/kv?token=not/exist
+Value not found for key: not/exist
+```
+
