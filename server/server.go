@@ -8,6 +8,7 @@ import (
 	"sync/atomic"
 
 	consul "github.com/minhthong582000/SOA-101-service-mesh/pkg/service/consul"
+	kv "github.com/minhthong582000/SOA-101-service-mesh/pkg/service/kv"
 )
 
 // Count stores a number that is being counted and other data to
@@ -15,21 +16,28 @@ import (
 type Count struct {
 	Count    uint64 `json:"count"`
 	Hostname string `json:"hostname"`
+	Language string `json:"language"`
 }
 
 // CountHandler serves a JSON feed that contains a number that increments each time
 // the API is called.
 type CountHandler struct {
 	index *uint64
+	kvService kv.Client
 }
 
 // counter Handle counting request from client service
 func (h CountHandler) counter(w http.ResponseWriter, r *http.Request) {
+	lang, err := h.kvService.Get("server/language")
+	if err != nil || lang == "" {
+		lang = "unknow"
+	}
+
 	atomic.AddUint64(h.index, 1)
 	hostname, _ := os.Hostname()
 	index := atomic.LoadUint64(h.index)
 
-	count := Count{Count: index, Hostname: hostname}
+	count := Count{Count: index, Hostname: hostname, Language: lang}
 
 	responseJSON, _ := json.Marshal(count)
 	w.WriteHeader(200)
@@ -63,6 +71,12 @@ func Server() {
 		log.Fatalln("Can't find consul:", err)
 	}
 
+	// New consul kv client
+	kvService, err := kv.NewKVClient(consulAdrr, "/", nil)
+	if err != nil {
+		log.Fatalln("Can't find consul:", err)
+	}
+
 	// Register itself
 	svcName := os.Getenv("CONSUL_APP_ID")
 	svcPort := 8080
@@ -80,7 +94,7 @@ func Server() {
 	mux := http.NewServeMux()
 
 	var index uint64
-	mux.HandleFunc("/count", CountHandler{index: &index}.counter)
+	mux.HandleFunc("/count", CountHandler{index: &index, kvService: kvService}.counter)
 	mux.HandleFunc("/ping", heathCheck) // Handle health check
 
 	// Creating an HTTP server that serves via Connect

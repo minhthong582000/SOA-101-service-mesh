@@ -61,9 +61,13 @@ remote error: tls: bad certificate
 
 ## Key/Value Store
 
-Test kv store:
+### Example 1
+
+Go to Consul UI:
 
 ![kv](./docs/images/kv.png)
+
+Test API:
 
 ```bash
 # Send get request to counting client
@@ -76,3 +80,16 @@ $ curl localhost:8081/kv?token=not/exist
 Value not found for key: not/exist
 ```
 
+### Example 2
+
+Go to Consul UI:
+
+![kv2](./docs/images/kv2.png)
+
+Test API
+
+```bash
+# Send get request to counting client
+$ curl localhost:8081/
+{"count":5,"hostname":"4b2a8b9fd305","language":"ENG"}
+```
