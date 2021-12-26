@@ -6,10 +6,13 @@ import (
 	"net/http"
 
 	consul "github.com/hashicorp/consul/api"
+	"github.com/hashicorp/consul/connect"
 )
 
 // Client provides an interface for getting data out of Consul
 type Client interface {
+	// Create connect service
+	CreateConnect(string) *connect.Service
 	// Get a Service from consul
 	Service(string, string) ([]*consul.ServiceEntry, *consul.QueryMeta, error)
 	// Register a service with local agent
@@ -43,6 +46,14 @@ func NewConsulClient(addr string, consulTLSConfig *tls.Config) (Client, error) {
 	return &client{consul: c}, nil
 }
 
+func (c *client) CreateConnect(name string) *connect.Service {
+	// Create an instance representing this service. "name" is the
+	// name of _this_ service. The service should be cleaned up via Close.
+	svc, _ := connect.NewService(name, c.consul)
+
+	return svc
+}
+
 // Register a service with consul local agent
 func (c *client) Register(name string, port int, tags []string) error {
 	reg := &consul.AgentServiceRegistration{
@@ -51,6 +62,23 @@ func (c *client) Register(name string, port int, tags []string) error {
 		Port: port,
 		Tags: tags,
 	}
+	reg.Connect = &consul.AgentServiceConnect{
+		Native: true, // Enable this to use Connect
+	}
+
+	// Health check
+	// reg.Check = & consul.AgentServiceCheck { 
+	// 	HTTP: fmt.Sprintf("https://%s:%d%s", name, port, "/ping"),
+	// 	Timeout: "3s", // Timeout
+	// 	Interval: "5s", // Health check interval
+	// 	TLSSkipVerify: true, // Skip TLS Verify
+	// 	// After 30 seconds after failure, 
+	// 	// delete this service, logout, equivalent to expiration time
+	// 	DeregisterCriticalServiceAfter: "5m", 
+	// 	// GRPC support, execute the address of the health check, 
+	// 	// Service will be transmitted to the Health.Check function
+	// 	// Grpc: fmt.sprintf ("% v:% v /% v", IP, r.Port, r.service),
+    // }
 
 	return c.consul.Agent().ServiceRegister(reg)
 }

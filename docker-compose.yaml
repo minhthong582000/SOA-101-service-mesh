@@ -1,30 +1,57 @@
 version: "3.9"
 
 services:
-  version: '3'
-
-services:
-  consul-agent-1: &consul-agent
+  # CONSUL AGENTS
+  consul-agent-1:
     image: consul:latest
+    environment:
+      - 'CONSUL_LOCAL_CONFIG={"connect": {"enabled": true}}'
     networks:
       - consul-demo
     command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
 
   consul-agent-2:
-    <<: *consul-agent
+    image: consul:latest
+    environment:
+      - 'CONSUL_LOCAL_CONFIG={"connect": {"enabled": true}}'
+    ports:
+      - "8081:8080"
+    networks:
+      - consul-demo
+    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
 
   consul-agent-3:
-    <<: *consul-agent
+    image: consul:latest
+    environment:
+      - 'CONSUL_LOCAL_CONFIG={"connect": {"enabled": true}}'
+    networks:
+      - consul-demo
+    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
 
-  consul-server-1: &consul-server
-    <<: *consul-agent
+  # CONSUL SERVERS
+  consul-server-1:
+    image: consul:latest
+    environment:
+      - 'CONSUL_LOCAL_CONFIG={"connect": {"enabled": true}}'
+    networks:
+      - consul-demo
     command: "agent -server -retry-join consul-server-bootstrap -client 0.0.0.0"
 
   consul-server-2:
-    <<: *consul-server
+    image: consul:latest
+    environment:
+      - 'CONSUL_LOCAL_CONFIG={"connect": {"enabled": true}}'
+    networks:
+      - consul-demo
+    command: "agent -server -retry-join consul-server-bootstrap -client 0.0.0.0"
 
+  # CONSUL SERVERS BOOTSTRAP
   consul-server-bootstrap:
-    <<: *consul-agent
+    image: consul:latest
+    environment:
+      - 'CONSUL_LOCAL_CONFIG={"connect": {"enabled": true}}'
+    networks:
+      - consul-demo
     ports:
       - "8400:8400"
       - "8500:8500"
@@ -32,29 +59,28 @@ services:
       - "8600:8600/udp"
     command: "agent -server -bootstrap-expect 3 -ui -client 0.0.0.0"
 
-  demoapp-1:
-    container_name: consul-demoapp-1
+  # DEMO APP
+  server:
+    container_name: server
     build:
       context: .
     restart: on-failure
     env_file:
-      - ./demoapp1.env
+      - ./server.env
     depends_on:
       - consul-agent-1
-    networks:
-        - consul-demo
+    network_mode: service:consul-agent-1 # Using same network namespace as agent-1
 
-  demoapp-2:
-    container_name: consul-demoapp-2
+  client:
+    container_name: client
     build:
       context: .
     restart: on-failure
     env_file:
-      - ./demoapp2.env
+      - ./client.env
     depends_on:
       - consul-agent-2
-    networks:
-        - consul-demo
+    network_mode: service:consul-agent-2 # Using same network namespace as agent-2
 
 networks:
   consul-demo:
