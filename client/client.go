@@ -80,7 +80,7 @@ func (c ClientHandler) QueryConsul(rw http.ResponseWriter, r *http.Request) {
 
 // heathCheck handle health check
 func (c ClientHandler) heathCheck(w http.ResponseWriter, req *http.Request) {
-    w.WriteHeader(200)
+	w.WriteHeader(200)
 	w.Write([]byte("ok"))
 }
 

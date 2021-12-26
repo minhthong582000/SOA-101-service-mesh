@@ -47,7 +47,7 @@ func (h CountHandler) counter(w http.ResponseWriter, r *http.Request) {
 
 // heathCheck handle health check
 func (h CountHandler) heathCheck(w http.ResponseWriter, req *http.Request) {
-    w.WriteHeader(200)
+	w.WriteHeader(200)
 	w.Write([]byte("ok"))
 }
 
