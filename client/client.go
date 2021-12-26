@@ -35,8 +35,8 @@ func (c ClientHandler) Counting(rw http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		rw.WriteHeader(200)
-		rw.Write([]byte("Empty response from server !"))
+		rw.WriteHeader(500)
+		rw.Write([]byte("Error reading response from counting server !"))
 		return
 	}
 
