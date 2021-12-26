@@ -8,11 +8,11 @@
 
 Service mesh using Consul Connect-Native
 
-[Connect-Native App Integration](https://www.consul.io/docs/connect/native)
+[Service Mesh - Connect-Native App Integration](https://www.consul.io/docs/connect/native)
 
-[Connect Configuration](https://www.consul.io/docs/connect/configuration)
+[Service Mesh - Connect Configuration](https://www.consul.io/docs/connect/configuration)
 
-[Connect-Native App Integration With Go](https://www.consul.io/docs/connect/native/go)
+[Service Mesh - Connect-Native App Integration With Go](https://www.consul.io/docs/connect/native/go)
 
 ## DNS Interface
 
@@ -41,3 +41,19 @@ $ curl localhost:8081/query
 ```
 
 ![deploy](./docs/images/consul.png)
+
+## Intentions
+
+[Service Mesh - Intentions](https://www.consul.io/docs/connect/intentions)
+
+Test intentions Client --x--> Server:
+
+![intentions](./docs/images/intentions.png)
+
+Test API:
+
+```bash
+# Send get request to counting server
+$ curl localhost:8081/
+Connect to server failed: Get "https://server.service.dc1.consul/count": remote error: tls: bad certificate
+```
