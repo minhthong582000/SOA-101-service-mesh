@@ -23,20 +23,6 @@ type client struct {
 	folder string
 }
 
-// Options are the options for the Consul client.
-type Options struct {
-	// URI scheme for the Consul server.
-	// Optional ("http" by default).
-	Scheme string
-	// Address of the Consul server, including port number.
-	// Optional ("127.0.0.1:8500" by default).
-	Address string
-	// Directory under which to store the key-value pairs.
-	// The Consul UI calls this "folder".
-	// Optional (none by default).
-	Folder string
-}
-
 // NewClient creates a new Consul client.
 func NewKVClient(addr string, folder string, consulTLSConfig *tls.Config) (Client, error) {
 	config := consul.DefaultConfig()
