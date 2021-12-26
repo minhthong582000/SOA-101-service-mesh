@@ -67,7 +67,7 @@ Test kv store:
 
 ```bash
 # Send get request to counting client
-$ curl localhost:8081/kv?token=wassupbro
+$ curl localhost:8081/kv?token=wassup/bro
 wassup/bro: {
   "sup": "bruh"
 }
