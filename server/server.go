@@ -28,6 +28,7 @@ type CountHandler struct {
 
 // counter Handle counting request from client service
 func (h CountHandler) counter(w http.ResponseWriter, r *http.Request) {
+	// Get config from Consul KV Store
 	lang, err := h.kvService.Get("server/language")
 	if err != nil || lang == "" {
 		lang = "unknow"
@@ -45,7 +46,7 @@ func (h CountHandler) counter(w http.ResponseWriter, r *http.Request) {
 }
 
 // heathCheck handle health check
-func heathCheck(w http.ResponseWriter, req *http.Request) {
+func (h CountHandler) heathCheck(w http.ResponseWriter, req *http.Request) {
     w.WriteHeader(200)
 	w.Write([]byte("ok"))
 }
@@ -94,8 +95,9 @@ func Server() {
 	mux := http.NewServeMux()
 
 	var index uint64
-	mux.HandleFunc("/count", CountHandler{index: &index, kvService: kvService}.counter)
-	mux.HandleFunc("/ping", heathCheck) // Handle health check
+	countHandler := CountHandler{index: &index, kvService: kvService}
+	mux.HandleFunc("/count", countHandler.counter)
+	mux.HandleFunc("/ping", countHandler.heathCheck) // Handle health check
 
 	// Creating an HTTP server that serves via Connect
 	server := &http.Server{
