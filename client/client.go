@@ -14,15 +14,15 @@ import (
 )
 
 type ClientHandler struct {
-	svc *connect.Service
+	connectService *connect.Service
 	kvService kv.Client
-	uServiceConsul consul.Client
+	consulService consul.Client
 }
 
 // Counting send request to counting server (counting service)
 func (c ClientHandler) Counting(rw http.ResponseWriter, r *http.Request) {
 	// Get an HTTP client
-	httpClient := c.svc.HTTPClient()
+	httpClient := c.connectService.HTTPClient()
 
 	// Perform a request to server, then use the standard response
 	serverEnpoint := "https://" + os.Getenv("CONSUL_QUERY_APP_ID") + ".service.dc1.consul/count"
@@ -63,7 +63,7 @@ func (c ClientHandler) GetKVStore(rw http.ResponseWriter, r *http.Request) {
 
 // QueryConsul Query server information
 func (c ClientHandler) QueryConsul(rw http.ResponseWriter, r *http.Request) {
-	services, _, err := c.uServiceConsul.Service(os.Getenv("CONSUL_QUERY_APP_ID"), "demo")
+	services, _, err := c.consulService.Service(os.Getenv("CONSUL_QUERY_APP_ID"), "demo")
 	if err != nil {
 		fmt.Println("Discover failed:", err)
 		rw.WriteHeader(500)
@@ -130,9 +130,9 @@ func Client() {
 	defer svc.Close()
 
 	clientHandler := &ClientHandler{
-		svc: svc, 
+		connectService: svc, 
 		kvService: kvService,
-		uServiceConsul: uServiceConsul,
+		consulService: uServiceConsul,
 	}
 	// Send request to counting server (counting service)
 	http.HandleFunc("/", clientHandler.Counting)

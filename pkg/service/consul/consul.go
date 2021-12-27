@@ -66,7 +66,7 @@ func (c *client) Register(name string, port int, tags []string) error {
 		Native: true, // Enable this to use Connect
 	}
 
-	// Health check
+	// Register Health check
 	// reg.Check = & consul.AgentServiceCheck { 
 	// 	HTTP: fmt.Sprintf("https://%s:%d%s", name, port, "/ping"),
 	// 	Timeout: "3s", // Timeout
@@ -78,7 +78,7 @@ func (c *client) Register(name string, port int, tags []string) error {
 	// 	// GRPC support, execute the address of the health check, 
 	// 	// Service will be transmitted to the Health.Check function
 	// 	// Grpc: fmt.sprintf ("% v:% v /% v", IP, r.Port, r.service),
-    // }
+	// }
 
 	return c.consul.Agent().ServiceRegister(reg)
 }
