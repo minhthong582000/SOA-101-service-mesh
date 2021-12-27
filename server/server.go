@@ -97,8 +97,10 @@ func Server() {
 
 	var index uint64
 	countHandler := CountHandler{index: &index, kvService: kvService}
+	// Handle counting request from client service
 	mux.HandleFunc("/count", countHandler.counter)
-	mux.HandleFunc("/ping", countHandler.heathCheck) // Handle health check
+	// Handle health check
+	mux.HandleFunc("/ping", countHandler.heathCheck) 
 
 	// Creating an HTTP server that serves via Connect
 	server := &http.Server{

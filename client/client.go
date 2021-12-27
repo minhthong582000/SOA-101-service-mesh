@@ -44,6 +44,7 @@ func (c ClientHandler) Counting(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(body)
 }
 
+// GetKVStore Get data from consul kv
 func (c ClientHandler) GetKVStore(rw http.ResponseWriter, r *http.Request) {
 	k := r.URL.Query().Get("token")
 
@@ -60,6 +61,7 @@ func (c ClientHandler) GetKVStore(rw http.ResponseWriter, r *http.Request) {
 	rw.Write([]byte(res))
 }
 
+// QueryConsul Query server information
 func (c ClientHandler) QueryConsul(rw http.ResponseWriter, r *http.Request) {
 	services, _, err := c.uServiceConsul.Service(os.Getenv("CONSUL_QUERY_APP_ID"), "demo")
 	if err != nil {
