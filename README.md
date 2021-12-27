@@ -61,6 +61,8 @@ remote error: tls: bad certificate
 
 ## Key/Value Store
 
+Centralized configuration.
+
 ### Example 1
 
 Go to Consul UI:
@@ -96,6 +98,8 @@ $ curl localhost:8081/
 
 ## TODO
 
+- gRPC
+- Broker/Message Queue
 - Service mesh using Envoy
 - Service mesh in kubernetes
 - API Gateway
