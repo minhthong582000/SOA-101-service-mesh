@@ -98,3 +98,5 @@ $ curl localhost:8081/
 
 - Service mesh using Envoy
 - Service mesh in kubernetes
+- API Gateway
+- Monitoring
