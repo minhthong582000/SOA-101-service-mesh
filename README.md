@@ -22,7 +22,7 @@ Consul service discovery DNS
 
 ## Demo
 
-Create counting servives, increments counter each time the API is called.
+Create counting services, increments counter each time the API is called.
 
 Run:
 
