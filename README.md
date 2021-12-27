@@ -93,3 +93,8 @@ Test API
 $ curl localhost:8081/
 {"count":5,"hostname":"4b2a8b9fd305","language":"ENG"}
 ```
+
+## TODO
+
+- Service mesh using Envoy
+- Service mesh in kubernetes
